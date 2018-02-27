@@ -5,7 +5,22 @@ from html.parser import HTMLParser
 
 #-------------------------------------------------------------------------
 
-#class FIFO_Policy:
+class FIFO_Policy:
+    def __init__(self, c):
+        self.queue = [s for s in c.seedURLs]
+
+    def getURL(self, c, iteration):
+        if (len(self.queue) == 0):
+            return None
+        url = self.queue[0]
+        self.queue.pop(0)
+        return url
+
+    def updateURLs(self, c, newURLs, newURLsWD, iteration):
+        tmpList = [url for url in newURLs]
+        tmpList.sort(key = lambda url: url[len(url) - url[::-1].index('/'):])
+        for url in tmpList:
+            self.queue.append(url)
 
 class LIFO_Policy:
     def __init__(self, c):
@@ -66,7 +81,7 @@ class Container:
          # Incoming URLs (to <- from; set of incoming links)
         self.incomingURLs = {}
         # Class which maintains a queue of urls to visit.
-        self.generatePolicy = LIFO_Policy(self) #Dummy_Policy()
+        self.generatePolicy = FIFO_Policy(self)#LIFO_Policy(self) #Dummy_Policy()
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
