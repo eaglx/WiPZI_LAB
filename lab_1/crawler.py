@@ -5,6 +5,8 @@ from html.parser import HTMLParser
 
 #-------------------------------------------------------------------------
 
+#class FIFO_Policy:
+
 class LIFO_Policy:
     def __init__(self, c):
         self.queue = [s for s in c.seedURLs]
@@ -143,6 +145,8 @@ def main():
         newURLs = getFilteredURLs(c, newURLs)
         # ^Default implementation removes all URLs
         # that are not a subdirectory of the root path.
+        if not newURLs:
+            continue
 
         ### removeDuplicates
         newURLsWD = removeDuplicates(c, newURLs)
@@ -218,7 +222,7 @@ def fetch(c):
 
 #-------------------------------------------------------------------------
 # Remove wrong URL (TODO)
-def removeWrongURL(c):
+def removeWrongURL(c): # solved
     if c.toFetch in c.URLs:
         c.URLs.remove(c.toFetch)
 
@@ -239,24 +243,29 @@ def parse(c, page, iteration):
 
 #-------------------------------------------------------------------------
 # Normalise newly obtained links (TODO)
-def getNormalisedURLs(newURLs):
-    return newURLs
+def getNormalisedURLs(newURLs): # solved
+    nURLs = set([url.lower() for url in newURLs])
+    return nURLs
 
 #-------------------------------------------------------------------------
-# Remove duplicates (duplicates) (TODO) solved
-def removeDuplicates(c, newURLs):
+# Remove duplicates (duplicates) (TODO)
+def removeDuplicates(c, newURLs): # solved
     toLeft = set([url for url in newURLs if url not in c.URLs])
     if c.debug:
         print("     Removed " + str(len(newURLs) - len(toLeft)) + " urls")
     return newURLs
 
 #-------------------------------------------------------------------------
-# Filter out some URLs (TODO) solved
-def getFilteredURLs(c, newURLs):
+# Filter out some URLs (TODO)
+def getFilteredURLs(c, newURLs): # solved
     toLeft = set([url for url in newURLs if url.lower().startswith(c.rootPage)])
     if c.debug:
         print("   Filtered out " + str(len(newURLs) - len(toLeft)) + " urls")
-    return toLeft
+
+    # To eleminate trap
+    toLeftNEW = ([url for url in toLeft if url not in c.toFetch])
+
+    return toLeftNEW
 
 #-------------------------------------------------------------------------
 # Store HTML pages (DONE)
