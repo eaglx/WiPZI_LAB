@@ -52,8 +52,10 @@ class LIFO_Authority_Policy:
             for k, v in self.authority.items():
                 list_one.append(k)
                 list_two.append(v)
-            print(list_one[numpy.random.choice(len(list_one), p = list_two)])
-            self.queue = [s for s in c.seedURLs]
+            sum_lt = sum(list_two)
+            for i in range(len(list_two)):
+                list_two[i] = list_two[i] / sum_lt
+            self.queue = [list_one[numpy.random.choice(len(list_one), p = list_two)]]
             self.fetched = []
         url = self.queue[-1]
         self.queue.pop(-1)
@@ -163,7 +165,7 @@ class Container:
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
-        self.iterations = 10
+        self.iterations = 50
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
@@ -181,7 +183,7 @@ class Container:
 
 
         # If True: debug
-        self.debug = True
+        self.debug = False
 
 def main():
 
