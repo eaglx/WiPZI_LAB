@@ -2,6 +2,7 @@ import urllib.request as req
 import sys
 import os
 from html.parser import HTMLParser
+import numpy
 
 #-------------------------------------------------------------------------
 
@@ -29,13 +30,7 @@ class LIFO_Authority_Policy:
         self.fetched = []
         self.authority = {}
 
-    def getURL(self, c, iteration):
-        print("############### incomingURLs:")
-        if(len(c.incomingURLs) != 0):
-            for k, v in c.incomingURLs.items():
-                print(str(k) + ":" + str(v))
-        print("###################################")
-
+    def getURL(self, c, iteration): # TODO ############################
         while True:
             if (len(self.queue) == 0):
                 break
@@ -45,7 +40,19 @@ class LIFO_Authority_Policy:
                 break
 
         if (len(self.queue) == 0):
-            #return None
+            if(len(c.incomingURLs) != 0):
+                for k, v in c.incomingURLs.items():
+                    self.authority[k] = len(v) + 1
+                for k, v in c.incomingURLs.items():
+                    for vi in v:
+                        if vi not in self.authority:
+                            self.authority[vi] = 1
+            list_one = []
+            list_two = []
+            for k, v in self.authority.items():
+                list_one.append(k)
+                list_two.append(v)
+            print(list_one[numpy.random.choice(len(list_one), p = list_two)])
             self.queue = [s for s in c.seedURLs]
             self.fetched = []
         url = self.queue[-1]
@@ -156,7 +163,7 @@ class Container:
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
-        self.iterations = 6
+        self.iterations = 10
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
