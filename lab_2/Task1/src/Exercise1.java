@@ -101,6 +101,8 @@ public class Exercise1
 
             AutoDetectParser parser = new AutoDetectParser();
             Metadata metadata = new Metadata();
+            // The PhoneExtractingContentHandler will examine any characters for phone numbers before passing them
+            // to the underlying Handler.
             PhoneExtractingContentHandler handler = new PhoneExtractingContentHandler(new BodyContentHandler(),metadata);
 
             parser.parse(stream, handler, metadata);
