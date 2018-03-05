@@ -9,6 +9,11 @@ import java.util.Date;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.langdetect.OptimaizeLangDetector;
+import org.apache.tika.language.detect.LanguageResult;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
 public class Exercise2
@@ -34,7 +39,7 @@ public class Exercise2
 
             initLangDetector();
 
-            File directory = new File("./documents");
+            File directory = new File("resources/documents");
             File[] files = directory.listFiles();
             for (File file : files)
             {
@@ -50,6 +55,13 @@ public class Exercise2
     private void initLangDetector() throws IOException
     {
         // TODO initialize language detector (langDetector)
+        AutoDetectParser parser = new AutoDetectParser();
+        Metadata metadata = new Metadata();
+        BodyContentHandler handler = new BodyContentHandler();
+        OptimaizeLangDetector optimaizeLangDetector = new OptimaizeLangDetector();
+
+        LanguageResult languageResult = new LanguageResult();
+        TikaCoreProperties tikaCoreProperties = new TikaCoreProperties();
     }
 
     private void processFile(File file) throws IOException, SAXException, TikaException
