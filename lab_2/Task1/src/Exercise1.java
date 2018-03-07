@@ -94,21 +94,18 @@ public class Exercise1
         //SOLVED
         ZipFile file = new  ZipFile("resources/Exercise1.zip");
         Enumeration entries =  file.entries();
-
         while(entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
             InputStream stream = file.getInputStream(entry);
 
             AutoDetectParser parser = new AutoDetectParser();
             Metadata metadata = new Metadata();
-            // The PhoneExtractingContentHandler will examine any characters for phone numbers before passing them
-            // to the underlying Handler.
-            PhoneExtractingContentHandler handler = new PhoneExtractingContentHandler(new BodyContentHandler(),metadata);
+            PhoneExtractingContentHandler handler = new PhoneExtractingContentHandler(new BodyContentHandler(), metadata);
 
             parser.parse(stream, handler, metadata);
-            String[] values = metadata.getValues("phonenumbers");
-            for(int i = 0; i < values.length; i++){
-                results.add(values[i]);
+            String[] numbers = metadata.getValues("phonenumbers");
+            for(int i = 0; i < numbers.length; i++){
+                results.add(numbers[i]);
             }
         }
         // ****************************************************

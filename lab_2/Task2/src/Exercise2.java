@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -9,12 +6,44 @@ import java.util.Date;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.langdetect.OptimaizeLangDetector;
+import org.apache.tika.language.LanguageIdentifier;
+import org.apache.tika.language.detect.LanguageDetector;
 import org.apache.tika.language.detect.LanguageResult;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.apache.tika.sax.PhoneExtractingContentHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static java.text.SimpleDateFormat.*;
 
 public class Exercise2
 {
@@ -55,21 +84,29 @@ public class Exercise2
     private void initLangDetector() throws IOException
     {
         // TODO initialize language detector (langDetector)
-        AutoDetectParser parser = new AutoDetectParser();
-        Metadata metadata = new Metadata();
-        BodyContentHandler handler = new BodyContentHandler();
-        OptimaizeLangDetector optimaizeLangDetector = new OptimaizeLangDetector();
-
-        LanguageResult languageResult = new LanguageResult();
-        TikaCoreProperties tikaCoreProperties = new TikaCoreProperties();
+        // SOLVED *********************************************
+        langDetector = new OptimaizeLangDetector();
     }
 
     private void processFile(File file) throws IOException, SAXException, TikaException
     {
         // TODO: extract content, metadata and language from given file
         // call saveResult method to save the data
+        // SOLVED *********************************************
+        AutoDetectParser parser = new AutoDetectParser();
+        Metadata metadata = new Metadata();
+        BodyContentHandler handler = new BodyContentHandler(-1); // No limit for 100000 chars
 
-        saveResult(file.getName(), null, null, null, null, null, null); //TODO: fill with proper values
+        FileInputStream stream = new FileInputStream(file);
+        parser.parse(stream, handler, metadata, new ParseContext());
+
+        LanguageResult result = langDetector.loadModels().detect(handler.toString());
+        String creatorName = metadata.get(TikaCoreProperties.CREATOR);
+        Date creationDate = metadata.getDate(TikaCoreProperties.CREATED);
+        Date lastModification = metadata.getDate(TikaCoreProperties.MODIFIED);
+        String mimeType = new MimetypesFileTypeMap().getContentType(file);
+
+        saveResult(file.getName(), result.getLanguage(), creatorName, creationDate, lastModification, mimeType, handler.toString()); //TODO: fill with proper values
     }
 
     private void saveResult(String fileName, String language, String creatorName, Date creationDate,
