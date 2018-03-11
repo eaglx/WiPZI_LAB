@@ -22,3 +22,24 @@ a thousand different file types (such as DOC, PPT, XLS and PDF; http://tika.apac
 
 * Tika provides support for the most popular metadata formats and tools for defining own
 ones.
+
+### lab02 - Text processing + Apache OpenNLP ###
+
+Apache Open NLP: open source Java library for Natural Language Processing (NLP). It 
+supports the most common NLP tasks such as:
+
+* tokenization,
+
+* sentence segmentation,
+
+* part-of-speech tagging,
+
+* named entity extraction,
+
+* chunking,
+
+* parsing,
+
+* language detection,
+
+* coreference resolution.
