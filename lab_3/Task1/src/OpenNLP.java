@@ -1,7 +1,12 @@
+import opennlp.tools.chunker.ChunkerME;
+import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetectorME;
 import opennlp.tools.langdetect.LanguageDetectorModel;
 import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import opennlp.tools.namefind.NameFinderME;
+import opennlp.tools.namefind.TokenNameFinder;
+import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTagger;
 import opennlp.tools.postag.POSTaggerME;
@@ -10,6 +15,7 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
+import opennlp.tools.util.Span;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +46,8 @@ public class OpenNLP {
 		posTagging();
 		lemmatization();
 		stemming();
-		// chunking();
-		// nameFinding();
+		chunking();
+		nameFinding();
 	}
 
 	private void languageDetection() throws IOException
@@ -131,11 +137,11 @@ public class OpenNLP {
 
 	private void posTagging() throws IOException {
 		String[] sentence = new String[0];
-		//sentence = new String[] { "Cats", "like", "milk" };
-		/*sentence = new String[]{"Cat", "is", "white", "like", "milk"};
-		sentence = new String[] { "Hi", "How", "are", "you", "Welcome", "to", "OpenNLP", "We", "provide", "multiple",
+		sentence = new String[] { "Cats", "like", "milk" };
+		//sentence = new String[]{"Cat", "is", "white", "like", "milk"};
+		/*sentence = new String[] { "Hi", "How", "are", "you", "Welcome", "to", "OpenNLP", "We", "provide", "multiple",
 				"built-in", "methods", "for", "Natural", "Language", "Processing" }; */
-		sentence = new String[] { "She", "put", "the", "big", "knives", "on", "the", "table" };
+		//sentence = new String[] { "She", "put", "the", "big", "knives", "on", "the", "table" };
 
 		File fileModel = new File(POS_MODEL);
         POSModel posModel = new POSModel(fileModel);
@@ -198,6 +204,16 @@ public class OpenNLP {
 		String[] tags = new String[0];
 		tags = new String[] { "PRP", "VBD", "DT", "JJ", "NNS", "IN", "DT", "NN" };
 
+        File fileModel = new File(CHUNKER_MODEL);
+        ChunkerModel chunkerModel = new ChunkerModel(fileModel);
+        ChunkerME chunkerME = new ChunkerME(chunkerModel);
+
+        String[] chunks = chunkerME.chunk(sentence, tags);
+        System.out.println();
+        System.out.println("CHUNKING:");
+        for (String str:chunks) {
+            System.out.println(str);
+        }
 	}
 
 	private void nameFinding() throws IOException
@@ -212,6 +228,26 @@ public class OpenNLP {
 				+ "well on small text corpora such as the Cranfield collection (several thousand documents). Large-scale retrieval systems, "
 				+ "such as the Lockheed Dialog system, came into use early in the 1970s.";
 
-	}
+
+        File modelFile2 = new File(TOKENIZER_MODEL);
+        TokenizerModel tokenizerModel = new TokenizerModel(modelFile2);
+        TokenizerME tokenizerME = new TokenizerME(tokenizerModel);
+
+        String[] tokens = tokenizerME.tokenize(text);
+
+		File fileModel = new File(NAME_MODEL);
+        TokenNameFinderModel tokenNameFinderModel = new TokenNameFinderModel(fileModel);
+        NameFinderME nameFinderME = new NameFinderME(tokenNameFinderModel);
+
+        Span[] nameSpan = nameFinderME.find(tokens);
+        System.out.println();
+        System.out.println("NAME FINDING:");
+        for (Span name: nameSpan) {
+            for(int i = name.getStart(); i < name.getEnd(); i++) {
+                System.out.print(tokens[i] + " ");
+            }
+            System.out.println();
+        }
+    }
 
 }
