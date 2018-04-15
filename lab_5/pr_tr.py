@@ -23,7 +23,21 @@ def getM(L):
     # number of outgoing links
     c = np.zeros([10], dtype=int)
     
-    return L
+    # SOLVE 1 ************************************************
+    for i in range(10):
+        c[i] = sum(L[i])
+    print("DEBUG")
+    print(c)   
+    print("DEBUG")    
+    for i in range(10):
+        for j in range(10):
+            if L[j][i] != 0:
+                M[i][j] = 1 / c[j]
+            else:
+                M[i][j] = 0
+    # ******************************************************
+    
+    return M #L
     
 print("Matrix L (indices)")
 print(L)    
@@ -41,6 +55,13 @@ print("PAGERANK")
 q = 0.15
 
 pr = np.zeros([10], dtype=float)
+
+# SOLVE 2 ************************************************
+for i in range(ITERATIONS):
+    for j in range(10):
+        pr[j]=q + ((1 - q) * sum([pr[k] * M[j][k] for k in range(10)]))
+print(pr/sum(pr))
+# ******************************************************
     
 ### TODO 3: compute trustrank with damping factor q = 0.15
 ### Documents that are good = 1, 2 (indexes = 0, 1)
@@ -51,8 +72,19 @@ print("TRUSTRANK (DOCUMENTS 1 AND 2 ARE GOOD)")
 q = 0.15
 
 d = np.zeros([10], dtype=float)
+# SOLVE 3 ************************************************
+d[0] = 1
+d[1] = 1
+# ******************************************************
 
 tr = [v for v in d]
+
+# SOLVE 3 ************************************************
+for i in range(ITERATIONS):
+    for j in range(10):
+        tr[j]= (d[j] * q) + ((1 - q) * sum([tr[k] * M[j][k] for k in range(10)]))
+print(tr/sum(tr))
+# ******************************************************
     
 ### TODO 4: Repeat TODO 3 but remove the connections 3->7 and 1->5 (indexes: 2->6, 0->4) 
 ### before computing trustrank
