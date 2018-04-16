@@ -46,6 +46,7 @@ M = getM(L)
 
 print("Matrix M (stochastic matrix)")
 print(M)
+print("\n")
 
 ### TODO 2: compute pagerank with damping factor q = 0.15
 ### Then, sort and print: (page index (first index = 1 add +1) : pagerank)
@@ -60,7 +61,10 @@ pr = np.zeros([10], dtype=float)
 for i in range(ITERATIONS):
     for j in range(10):
         pr[j]=q + ((1 - q) * sum([pr[k] * M[j][k] for k in range(10)]))
-print(pr/sum(pr))
+pr = np.sort(pr)[::-1]
+for i in range(10):
+	print(str(i) + ": " + str(pr[i]/sum(pr)))
+print("\n")
 # ******************************************************
     
 ### TODO 3: compute trustrank with damping factor q = 0.15
@@ -83,7 +87,9 @@ tr = [v for v in d]
 for i in range(ITERATIONS):
     for j in range(10):
         tr[j]= (d[j] * q) + ((1 - q) * sum([tr[k] * M[j][k] for k in range(10)]))
-print(tr/sum(tr))
+tr = np.sort(tr)[::-1]
+for i in range(10):
+	print(str(i) + ": " + str(tr[i]/sum(tr)))
 # ******************************************************
     
 ### TODO 4: Repeat TODO 3 but remove the connections 3->7 and 1->5 (indexes: 2->6, 0->4) 
