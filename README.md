@@ -60,3 +60,11 @@ mining is to generate a structural summary of this graph. This can be, e.g.,:
 * categorizing web sites: for crawling policy, for ranking purposes (search engines),
 
 * revealing the structure of a web site (navigation purposes).
+
+### lab_6 - Apache Nutch + Solr + Lucene ###
+
+* Apache Nutch:ApacheNutch is an open software project for web crawling.
+
+* Apache Lucene is an open source search engine library written in Java. 
+
+* Apache Solr (pronounced Solar): ApacheSolr is an open software search platform built on Apache Lucene. 
